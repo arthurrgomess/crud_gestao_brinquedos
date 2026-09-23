@@ -1,10 +1,10 @@
 <?php
-// Configuração da conexão com o banco de dados (PDO)
 
 $host = 'localhost';
 $dbname = 'gestao_brinquedos';
 $usuario = 'root';
 $senha = '';
+$porta = 3306;
 
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $usuario, $senha);

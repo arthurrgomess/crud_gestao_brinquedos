@@ -10,7 +10,6 @@ CREATE TABLE IF NOT EXISTS brinquedos (
     quantidade_estoque INT NOT NULL DEFAULT 0
 );
 
--- Alguns registros de exemplo (opcional)
 INSERT INTO brinquedos (nome, categoria, faixa_etaria, preco, quantidade_estoque) VALUES
 ('Bola de Futebol', 'Esportes', '5+', 39.90, 20),
 ('Quebra-Cabeça 100 peças', 'Educativo', '6+', 24.50, 15),
