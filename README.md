@@ -1,6 +1,6 @@
 # Sistema de Gestão de Brinquedos
 
-Sistema CRUD simples em PHP + MySQL para gerenciar os brinquedos de uma loja
+Sistema CRUD em PHP + MySQL para gerenciar os brinquedos de uma loja
 (cadastrar, listar, editar e excluir), utilizando **Prepared Statements** (PDO)
 em todas as operações com o banco de dados.
 
@@ -14,13 +14,13 @@ em todas as operações com o banco de dados.
 ## Estrutura do projeto
 
 ```
-config.php     -> conexão com o banco de dados (PDO)
-funcoes.php    -> funções do CRUD (listar, buscar, cadastrar, editar, excluir, validar)
+infra/conexao.php -> conexão com o banco de dados (PDO)
+public/funcoes.php -> funções do CRUD (listar, buscar, cadastrar, editar, excluir, validar)
 index.php      -> lista os brinquedos cadastrados
-cadastrar.php  -> formulário e lógica de cadastro (Create)
-editar.php     -> formulário e lógica de edição (Update)
-excluir.php    -> exclusão de um brinquedo (Delete)
-database.sql   -> script de criação do banco e da tabela
+public/cadastrar.php -> formulário e lógica de cadastro (Create)
+public/editar.php -> formulário e lógica de edição (Update)
+public/excluir.php -> exclusão de um brinquedo (Delete)
+database/db.sql -> script de criação do banco e da tabela
 ```
 
 ## Estrutura do banco de dados
@@ -38,13 +38,13 @@ Tabela `brinquedos`:
 
 ## Como executar
 
-1. Crie o banco de dados executando o arquivo `database.sql` no MySQL
+1. Crie o banco de dados executando o arquivo `database/db.sql` no MySQL
    (via phpMyAdmin, linha de comando ou outra ferramenta de sua preferência).
-2. Ajuste, se necessário, os dados de acesso em `config.php` (host, usuário e senha).
+2. Ajuste, se necessário, os dados de acesso em `infra/conexao.php` (host, usuário e senha).
 3. Coloque a pasta do projeto dentro do diretório do seu servidor local
    (ex: `htdocs` no XAMPP).
 4. Acesse `index.php` pelo navegador, por exemplo:
-   `http://localhost/gestao-brinquedos/index.php`
+   `http://localhost/crud_gestao_brinquedos/index.php`
 
 ## Funcionalidades
 

@@ -7,10 +7,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $erros = validarDadosBrinquedo($dados);
 
     if (empty($erros)) {
-        cadastrarBrinquedo($pdo, $dados);
-        
-header("Location: ../index.php");
-exit;
+        try {
+            if (cadastrarBrinquedo($pdo, $dados)) {
+                header("Location: ../index.php");
+                exit;
+            }
+            $erros[] = 'Não foi possível cadastrar o brinquedo. Tente novamente.';
+        } catch (PDOException $e) {
+            error_log($e->getMessage());
+            $erros[] = 'O banco de dados não conseguiu cadastrar o brinquedo.';
+        }
     }
 }
 ?>

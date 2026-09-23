@@ -2,13 +2,18 @@
 require_once __DIR__ . '/funcoes.php';
 
 $id = $_GET['id'] ?? null;
-if (!$id) {
-    
-header("Location: ../index.php");
-exit;
+if (!is_scalar($id) || filter_var($id, FILTER_VALIDATE_INT) === false || (int) $id < 1) {
+    header("Location: ../index.php");
+    exit;
 }
 
-$brinquedo = buscarBrinquedoPorId($pdo, $id);
+try {
+    $brinquedo = buscarBrinquedoPorId($pdo, $id);
+} catch (PDOException $e) {
+    error_log($e->getMessage());
+    http_response_code(500);
+    die('Não foi possível carregar os dados do brinquedo. Tente novamente mais tarde.');
+}
 if (!$brinquedo) {
     die("Brinquedo não encontrado.");
 }
@@ -20,10 +25,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $erros = validarDadosBrinquedo($dados);
 
     if (empty($erros)) {
-        editarBrinquedo($pdo, $id, $dados);
-       
-header("Location: ../index.php");
-exit;
+        try {
+            if (editarBrinquedo($pdo, $id, $dados)) {
+                header("Location: ../index.php");
+                exit;
+            }
+            $erros[] = 'Não foi possível atualizar o brinquedo. Tente novamente.';
+        } catch (PDOException $e) {
+            error_log($e->getMessage());
+            $erros[] = 'O banco de dados não conseguiu atualizar o brinquedo.';
+        }
     }
     $brinquedo = $dados;
 }

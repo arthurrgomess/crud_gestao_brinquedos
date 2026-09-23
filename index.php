@@ -1,6 +1,13 @@
 <?php
 require_once __DIR__ . '/public/funcoes.php';        
-$brinquedos = listarBrinquedos($pdo);
+try {
+    $brinquedos = listarBrinquedos($pdo);
+    $erroBanco = false;
+} catch (PDOException $e) {
+    error_log($e->getMessage());
+    $brinquedos = [];
+    $erroBanco = true;
+}
 ?>
 <!DOCTYPE html>
 <html lang="pt-br">
@@ -10,6 +17,9 @@ $brinquedos = listarBrinquedos($pdo);
 </head>
 <body>
     <h1>Brinquedos Cadastrados</h1>
+    <?php if ($erroBanco): ?>
+        <p role="alert">Não foi possível carregar os brinquedos. Tente novamente mais tarde.</p>
+    <?php endif; ?>
     <p><a href="public/cadastrar.php">+ Novo brinquedo</a></p>   
 
     <table border="1" cellpadding="8" cellspacing="0">

@@ -2,7 +2,8 @@
 require_once __DIR__ . '/../infra/conexao.php';
 
 function listarBrinquedos($pdo) {
-    $stmt = $pdo->query("SELECT * FROM brinquedos ORDER BY nome");
+    $stmt = $pdo->prepare("SELECT id, nome, categoria, faixa_etaria, preco, quantidade_estoque FROM brinquedos ORDER BY nome");
+    $stmt->execute();
     return $stmt->fetchAll(PDO::FETCH_ASSOC);
 }
 
@@ -14,11 +15,24 @@ function buscarBrinquedoPorId($pdo, $id) {
 
 function validarDadosBrinquedo($dados) {
     $erros = [];
-    if (empty($dados['nome'])) $erros[] = "O nome é obrigatório.";
-    if (empty($dados['categoria'])) $erros[] = "A categoria é obrigatória.";
-    if (empty($dados['faixa_etaria'])) $erros[] = "A faixa etária é obrigatória.";
-    if (!is_numeric($dados['preco'] ?? '') || $dados['preco'] < 0) $erros[] = "Preço inválido.";
-    if (!is_numeric($dados['quantidade_estoque'] ?? '') || $dados['quantidade_estoque'] < 0) $erros[] = "Quantidade em estoque inválida.";
+    foreach (['nome' => 100, 'categoria' => 50, 'faixa_etaria' => 30] as $campo => $limite) {
+        $valor = $dados[$campo] ?? null;
+        if (!is_string($valor) || trim($valor) === '') {
+            $erros[] = ucfirst(str_replace('_', ' ', $campo)) . ' é obrigatório.';
+        } elseif (function_exists('mb_strlen') ? mb_strlen(trim($valor), 'UTF-8') > $limite : strlen(trim($valor)) > $limite) {
+            $erros[] = ucfirst(str_replace('_', ' ', $campo)) . " deve ter no máximo {$limite} caracteres.";
+        }
+    }
+
+    $preco = $dados['preco'] ?? null;
+    if (!is_scalar($preco) || !preg_match('/^\d{1,8}(?:\.\d{1,2})?$/', (string) $preco)) {
+        $erros[] = 'Preço inválido.';
+    }
+
+    $quantidade = $dados['quantidade_estoque'] ?? null;
+    if (!is_scalar($quantidade) || filter_var($quantidade, FILTER_VALIDATE_INT) === false || (int) $quantidade < 0 || (int) $quantidade > 2147483647) {
+        $erros[] = 'Quantidade em estoque deve ser um número inteiro maior ou igual a zero.';
+    }
     return $erros;
 }
 
@@ -27,9 +41,9 @@ function cadastrarBrinquedo($pdo, $dados) {
     $sql = "INSERT INTO brinquedos (nome, categoria, faixa_etaria, preco, quantidade_estoque) VALUES (?, ?, ?, ?, ?)";
     $stmt = $pdo->prepare($sql);
     return $stmt->execute([
-        $dados['nome'],
-        $dados['categoria'],
-        $dados['faixa_etaria'],
+        trim($dados['nome']),
+        trim($dados['categoria']),
+        trim($dados['faixa_etaria']),
         $dados['preco'],
         $dados['quantidade_estoque'],
     ]);
@@ -39,9 +53,9 @@ function editarBrinquedo($pdo, $id, $dados) {
     $sql = "UPDATE brinquedos SET nome = ?, categoria = ?, faixa_etaria = ?, preco = ?, quantidade_estoque = ? WHERE id = ?";
     $stmt = $pdo->prepare($sql);
     return $stmt->execute([
-        $dados['nome'],
-        $dados['categoria'],
-        $dados['faixa_etaria'],
+        trim($dados['nome']),
+        trim($dados['categoria']),
+        trim($dados['faixa_etaria']),
         $dados['preco'],
         $dados['quantidade_estoque'],
         $id,
