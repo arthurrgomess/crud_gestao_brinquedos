@@ -1,10 +1,11 @@
 <?php
-require_once 'funcoes.php';
+require_once __DIR__ . '/funcoes.php';
 
 $id = $_GET['id'] ?? null;
 if (!$id) {
-    header("Location: index.php");
-    exit;
+    
+header("Location: ../index.php");
+exit;
 }
 
 $brinquedo = buscarBrinquedoPorId($pdo, $id);
@@ -20,8 +21,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
     if (empty($erros)) {
         editarBrinquedo($pdo, $id, $dados);
-        header("Location: index.php");
-        exit;
+       
+header("Location: ../index.php");
+exit;
     }
     $brinquedo = $dados;
 }

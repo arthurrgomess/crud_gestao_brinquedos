@@ -1,5 +1,5 @@
 <?php
-require_once 'config.php';
+require_once __DIR__ . '/../infra/conexao.php';
 
 function listarBrinquedos($pdo) {
     $stmt = $pdo->query("SELECT * FROM brinquedos ORDER BY nome");

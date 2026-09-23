@@ -1,5 +1,5 @@
 <?php
-require_once 'funcoes.php';
+require_once __DIR__ . '/public/funcoes.php';        
 $brinquedos = listarBrinquedos($pdo);
 ?>
 <!DOCTYPE html>
@@ -10,7 +10,7 @@ $brinquedos = listarBrinquedos($pdo);
 </head>
 <body>
     <h1>Brinquedos Cadastrados</h1>
-    <p><a href="cadastrar.php">+ Novo brinquedo</a></p>
+    <p><a href="public/cadastrar.php">+ Novo brinquedo</a></p>   
 
     <table border="1" cellpadding="8" cellspacing="0">
         <tr>
@@ -34,8 +34,8 @@ $brinquedos = listarBrinquedos($pdo);
             <td>R$ <?= number_format($b['preco'], 2, ',', '.') ?></td>
             <td><?= (int) $b['quantidade_estoque'] ?></td>
             <td>
-                <a href="editar.php?id=<?= $b['id'] ?>">Editar</a> |
-                <a href="excluir.php?id=<?= $b['id'] ?>" onclick="return confirm('Excluir este brinquedo?')">Excluir</a>
+                <a href="public/editar.php?id=<?= $b['id'] ?>">Editar</a> |    
+                <a href="public/excluir.php?id=<?= $b['id'] ?>" onclick="return confirm('Excluir este brinquedo?')">Excluir</a>   
             </td>
         </tr>
         <?php endforeach; ?>
